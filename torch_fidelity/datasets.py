@@ -13,7 +13,7 @@ from pathlib import Path
 
 class TransformPILtoRGBTensor:
     def __call__(self, img):
-        vassert(type(img) is Image.Image, "Input is not a PIL.Image")
+        vassert(type(img) is Image.Image, f"{type(img)} Input is not a PIL.Image")
         return F.pil_to_tensor(img)
 
 
