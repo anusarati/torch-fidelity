@@ -8,6 +8,7 @@ from torchvision.datasets import CIFAR10, STL10, CIFAR100
 import torchvision.transforms.functional as F
 
 from torch_fidelity.helpers import vassert
+from pathlib import Path
 
 
 class TransformPILtoRGBTensor:
@@ -26,7 +27,7 @@ class ImagesPathDataset(Dataset):
 
     def __getitem__(self, i):
         path = self.files[i]
-        if path.suffix == ".pt":
+        if Path(path).suffix == ".pt":
             return torch.load(path)
         img = Image.open(path)
         img = self.transforms(img)
