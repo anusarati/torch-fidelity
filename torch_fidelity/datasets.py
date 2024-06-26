@@ -26,7 +26,9 @@ class ImagesPathDataset(Dataset):
 
     def __getitem__(self, i):
         path = self.files[i]
-        img = Image.open(path).convert("RGB")
+        if path.suffix == ".pt":
+            return torch.load(path)
+        img = Image.open(path)
         img = self.transforms(img)
         return img
 
