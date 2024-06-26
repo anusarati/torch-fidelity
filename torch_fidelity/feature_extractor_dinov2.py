@@ -8,6 +8,7 @@ from torch_fidelity.feature_extractor_base import FeatureExtractorBase
 from torch_fidelity.helpers import vassert, text_to_dtype, CleanStderr
 
 from torch_fidelity.interpolate_compat_tensorflow import interpolate_bilinear_2d_like_tensorflow1x
+from torch_fidelity.fix_channels import fix_channels
 
 
 MODEL_METADATA = {
@@ -63,6 +64,10 @@ class FeatureExtractorDinoV2(FeatureExtractorBase):
                 self.model = torch.hub.load("facebookresearch/dinov2", MODEL_METADATA[name])
             else:
                 raise NotImplementedError
+
+        if 'channels' in kwargs:
+            channels = kwargs['channels']
+            self.model.patch_embed.proj = fix_channels(self.model.patch_embed.proj, channels)
 
         self.to(self.feature_extractor_internal_dtype)
         self.requires_grad_(False)
