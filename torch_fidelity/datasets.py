@@ -19,7 +19,7 @@ class TransformPILtoRGBTensor:
 class ImagesPathDataset(Dataset):
     def __init__(self, files, transforms=None):
         self.files = files
-        self.transforms = TransformPILtoRGBTensor() if transforms is None else transforms
+        self.transforms = TransformPILtoRGBTensor() if transforms is None else transforms #not RGB lol
 
     def __len__(self):
         return len(self.files)

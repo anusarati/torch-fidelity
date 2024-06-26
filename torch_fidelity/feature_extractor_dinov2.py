@@ -65,9 +65,12 @@ class FeatureExtractorDinoV2(FeatureExtractorBase):
             else:
                 raise NotImplementedError
 
-        if 'channels' in kwargs:
-            channels = kwargs['channels']
+        if "channels" in kwargs:
+            channels = kwargs["channels"]
             self.model.patch_embed.proj = fix_channels(self.model.patch_embed.proj, channels)
+            self.channels = channels
+        else:
+            self.channels == 3
 
         self.to(self.feature_extractor_internal_dtype)
         self.requires_grad_(False)
@@ -75,7 +78,7 @@ class FeatureExtractorDinoV2(FeatureExtractorBase):
 
     def forward(self, x):
         vassert(torch.is_tensor(x) and x.dtype == torch.uint8, "Expecting image as torch.Tensor with dtype=torch.uint8")
-        vassert(x.dim() == 4 and x.shape[1] == 3, f"Input is not Bx3xHxW: {x.shape}")
+        # vassert(x.dim() == 4 and x.shape[1] == 3, f"Input is not Bx3xHxW: {x.shape}")
 
         x = x.to(self.feature_extractor_internal_dtype)
         # N x 3 x ? x ?
@@ -89,8 +92,10 @@ class FeatureExtractorDinoV2(FeatureExtractorBase):
 
         x = torchvision.transforms.functional.normalize(
             x,
-            (255 * 0.485, 255 * 0.456, 255 * 0.406),
-            (255 * 0.229, 255 * 0.224, 255 * 0.225),
+            # this is for up to 3 channels
+            # need stats for embedding image
+            (255 * 0.485, 255 * 0.456, 255 * 0.406)[:self.channels],
+            (255 * 0.229, 255 * 0.224, 255 * 0.225)[:self.channels],
             inplace=False,
         )
         # N x 3 x 224 x 224
