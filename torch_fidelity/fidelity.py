@@ -291,6 +291,12 @@ def main():
         type=int,
         help="Random numbers generator seed for all operations involving randomness",
     )
+    parser.add_argument(
+        "--channels",
+        default=3,
+        type=int,
+        help="Number of channels in images"
+    )
     parser.add_argument("--save-cpu-ram", action="store_true", help="Use less CPU RAM at the cost of speed")
     parser.add_argument("--silent", action="store_true", help="Do not output progress information to STDERR")
 
