@@ -13,14 +13,14 @@ from pathlib import Path
 
 class TransformPILtoRGBTensor:
     def __call__(self, img):
-        vassert(type(img) is Image.Image, f"{type(img)} Input is not a PIL.Image")
+        vassert(isinstance(img, Image.Image), f"{type(img)} Input is not a PIL.Image")
         return F.pil_to_tensor(img)
 
 
 class ImagesPathDataset(Dataset):
     def __init__(self, files, transforms=None):
         self.files = files
-        self.transforms = TransformPILtoRGBTensor() if transforms is None else transforms #not RGB lol
+        self.transforms = TransformPILtoRGBTensor() if transforms is None else transforms  # not RGB lol
 
     def __len__(self):
         return len(self.files)
