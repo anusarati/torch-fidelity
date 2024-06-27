@@ -31,7 +31,7 @@ class FeatureExtractorCustom(FeatureExtractorBase):
         self.eval()
 
     def forward(self, x):
-        return (self.classifier(x).last_hidden_state,)
+        return (self.classifier.classifier(x).pooler_output,)
 
     @staticmethod
     def get_provided_features_list():
