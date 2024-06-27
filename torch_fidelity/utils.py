@@ -32,6 +32,9 @@ DEFAULT_FEATURE_EXTRACTOR = {
     "prc": "vgg16",
 }
 
+from tqdm.contrib.concurrent import thread_map
+from threading import Lock
+
 
 def glob_samples_paths(path, samples_find_deep, samples_find_ext, samples_ext_lossy=None, verbose=True):
     vassert(type(samples_find_ext) is str and samples_find_ext != "", "Sample extensions not specified")
@@ -43,24 +46,31 @@ def glob_samples_paths(path, samples_find_deep, samples_find_ext, samples_ext_lo
         f'Looking for samples {"recursively" if samples_find_deep else "non-recursivelty"} in "{path}" '
         f"with extensions {samples_find_ext}",
     )
-    samples_find_ext = [a.strip() for a in samples_find_ext.split(",") if a.strip() != ""]
+    samples_find_ext = set(a.strip() for a in samples_find_ext.split(",") if a.strip() != "")
     if samples_ext_lossy is not None:
         samples_ext_lossy = [a.strip() for a in samples_ext_lossy.split(",") if a.strip() != ""]
     have_lossy = False
     files = []
+    lock = Lock()
+
     for r, d, ff in os.walk(path):
         if not samples_find_deep and os.path.realpath(r) != os.path.realpath(path):
             continue
-        for f in ff:
+
+        def check_file(f):
             ext = os.path.splitext(f)[1].lower()
             if len(ext) > 0 and ext[0] == ".":
                 ext = ext[1:]
             if ext not in samples_find_ext:
-                continue
+                return
             if samples_ext_lossy is not None and ext in samples_ext_lossy:
                 have_lossy = True
-            files.append(os.path.realpath(os.path.join(r, f)))
-    files = sorted(files)
+            path = os.path.realpath(os.path.join(r, f))
+            with lock:
+                files.append(path)
+
+        thread_map(check_file, ff)
+
     vprint(
         verbose,
         f"Found {len(files)} samples"
