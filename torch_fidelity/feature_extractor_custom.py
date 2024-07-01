@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from malgen.infra.classifier import Classifier
 
 from torch_fidelity.feature_extractor_base import FeatureExtractorBase
 from torch_fidelity.helpers import text_to_dtype, vassert
@@ -24,14 +23,14 @@ class FeatureExtractorCustom(FeatureExtractorBase):
         )
         self.feature_extractor_internal_dtype = text_to_dtype(feature_extractor_internal_dtype, "float32")
 
-        self.classifier = Classifier.load_from_checkpoint(feature_extractor_weights_path)
+        self.classifier = torch.load(feature_extractor_weights_path)
 
         self.to(self.feature_extractor_internal_dtype)
         self.requires_grad_(False)
         self.eval()
 
     def forward(self, x):
-        return (self.classifier.classifier(x).pooler_output,)
+        return (self.classifier(x).pooler_output,)
 
     @staticmethod
     def get_provided_features_list():
