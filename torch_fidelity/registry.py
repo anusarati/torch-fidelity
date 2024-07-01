@@ -5,6 +5,7 @@ from torch_fidelity.feature_extractor_base import FeatureExtractorBase
 from torch_fidelity.feature_extractor_clip import FeatureExtractorCLIP
 from torch_fidelity.feature_extractor_dinov2 import FeatureExtractorDinoV2
 from torch_fidelity.feature_extractor_inceptionv3 import FeatureExtractorInceptionV3
+from torch_fidelity.feature_extractor_custom import FeatureExtractorCustom
 from torch_fidelity.feature_extractor_vgg16 import FeatureExtractorVGG16
 from torch_fidelity.helpers import vassert
 from torch_fidelity.noise import (
@@ -187,6 +188,7 @@ register_feature_extractor("dinov2-vit-s-14", FeatureExtractorDinoV2)
 register_feature_extractor("dinov2-vit-b-14", FeatureExtractorDinoV2)
 register_feature_extractor("dinov2-vit-l-14", FeatureExtractorDinoV2)
 register_feature_extractor("dinov2-vit-g-14", FeatureExtractorDinoV2)
+register_feature_extractor("custom", FeatureExtractorCustom)
 
 register_sample_similarity("lpips-vgg16", SampleSimilarityLPIPS)
 
