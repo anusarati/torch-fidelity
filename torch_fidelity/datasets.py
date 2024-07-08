@@ -21,6 +21,7 @@ class ImagesPathDataset(Dataset):
     def __init__(self, files, transforms=None, channels=3):
         self.files = files
         self.transforms = TransformPILtoRGBTensor() if transforms is None else transforms  # not RGB lol
+        self.channels = channels
 
     def __len__(self):
         return len(self.files)
