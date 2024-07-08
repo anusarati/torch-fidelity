@@ -18,7 +18,7 @@ class TransformPILtoRGBTensor:
 
 
 class ImagesPathDataset(Dataset):
-    def __init__(self, files, transforms=None):
+    def __init__(self, files, transforms=None, channels=3):
         self.files = files
         self.transforms = TransformPILtoRGBTensor() if transforms is None else transforms  # not RGB lol
 
@@ -30,6 +30,8 @@ class ImagesPathDataset(Dataset):
         if Path(path).suffix == ".pt":
             return torch.load(path)
         img = Image.open(path)
+        if self.channels == 3:
+            img = img.convert("RGB")
         img = self.transforms(img)
         return img
 
