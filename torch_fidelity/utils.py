@@ -150,6 +150,7 @@ def get_featuresdict_from_dataset(input, feat_extractor, batch_size, cuda, save_
             if cuda:
                 batch = batch.cuda(non_blocking=True)
 
+            features = feat_extractor(batch)
             featuresdict = feat_extractor.convert_features_tuple_to_dict(features)
             featuresdict = {k: [v.cpu()] for k, v in featuresdict.items()}
 
