@@ -143,10 +143,6 @@ def get_featuresdict_from_dataset(input, feat_extractor, batch_size, cuda, save_
 
     out = None
 
-    f = feat_extractor
-    if cuda:
-        f = torch.nn.DataParallel(feat_extractor, device_ids=list(range(torch.cuda.device_count())))
-
     with tqdm(
         disable=not verbose, leave=False, unit="samples", total=len(input), desc="Processing samples"
     ) as t, torch.no_grad():
@@ -154,7 +150,6 @@ def get_featuresdict_from_dataset(input, feat_extractor, batch_size, cuda, save_
             if cuda:
                 batch = batch.cuda(non_blocking=True)
 
-            features = f(batch)
             featuresdict = feat_extractor.convert_features_tuple_to_dict(features)
             featuresdict = {k: [v.cpu()] for k, v in featuresdict.items()}
 
