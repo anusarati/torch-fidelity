@@ -30,6 +30,11 @@ class FeatureExtractorCustom(FeatureExtractorBase):
         self.eval()
 
     def forward(self, x):
+        vassert(torch.is_tensor(x) and x.dtype == torch.uint8, "Expecting image as torch.Tensor with dtype=torch.uint8")
+
+        x = x.to(self.feature_extractor_internal_dtype)
+        x = x / 255
+
         return (self.classifier(x).pooler_output,)
 
     @staticmethod

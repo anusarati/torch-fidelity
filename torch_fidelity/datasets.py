@@ -14,7 +14,8 @@ from pathlib import Path
 class TransformPILtoRGBTensor:
     def __call__(self, img):
         vassert(isinstance(img, Image.Image), f"{type(img)} Input is not a PIL.Image")
-        return F.to_dtype(F.pil_to_tensor(img), scale=True)
+        return F.pil_to_tensor(img)
+        #return F.to_dtype(F.pil_to_tensor(img), scale=True)
 
 
 class ImagesPathDataset(Dataset):
